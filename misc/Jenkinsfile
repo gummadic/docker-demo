@@ -13,8 +13,10 @@ node {
      }
    }
    stage('docker build/push') {
+    docker.withServer('tcp://169.61.51.182:4243', '.') {
      docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
-          def app = docker.build("gummadic/hello:${commit_id}", '.')
+          def app = docker.build("gummadic/hello:${commit_id}", '.').push
      }
+
    }
 }
