@@ -14,7 +14,9 @@ node {
    }
    stage('docker build/push') {
     docker.withServer('tcp://169.61.51.182:4243', '.') {
-
+        docker.image('gummadic/hello:1.0.0').withRun('-p 3306:3306') {
+            /* do things */
+        }
     }
    }
 }
