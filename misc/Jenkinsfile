@@ -1,22 +1,10 @@
-node {
-   def commit_id
-   stage('Preparation') {
-     checkout scm
-     sh "git rev-parse --short HEAD > .git/commit-id"                        
-     commit_id = readFile('.git/commit-id').trim()
-   }
-   stage('test') {
-     nodejs(nodeJSInstallationName: 'nodejs') {
-       sh 'npm install --only=dev'
-       sh 'npm audit fix'
-       sh 'npm test'
-     }
-   }
-   stage('docker build/push') {
-    docker.withServer('tcp://169.61.51.182:4243', '.') {
-        docker.image('gummadic/hello:1.0.0').withRun('-p 3306:3306') {
-            /* do things */
-        }
+def label = "mypod-${UUID.randomUUID().toString()}"
+podTemplate(label: label) {
+  node(label) {
+    stage('Run shell') {
+      container('mycontainer') {
+        sh 'echo hello world'
+      }
     }
-   }
+  }
 }
